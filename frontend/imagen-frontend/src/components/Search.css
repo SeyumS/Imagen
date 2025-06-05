@@ -1,0 +1,55 @@
+.search-container{
+  width:25rem;
+  height:40rem;
+  display: flex;
+ flex-direction: column;
+ overflow-x: hidden; 
+}
+
+.images-container{
+  height:50vh;
+  width:auto;
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory !important;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.slide-image{
+  object-fit: cover;
+  width: 360px;
+  flex-shrink: 0;
+}
+
+.image-header{
+  position: relative;
+  bottom:2rem;
+  left:2rem;
+  position: absolute;
+  bottom: 0.5rem;
+  color: white
+}
+
+.themes{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.theme{
+  width: 80%;
+  height: 5rem;
+  background-color: red;
+  margin: 3rem;
+  border-radius: 1rem;
+}
+.theme-img{
+  width: 25%;
+  object-fit: cover;
+}
+
+
+
+

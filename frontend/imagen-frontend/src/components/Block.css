@@ -1,0 +1,43 @@
+
+.block-container{
+  width: 360px;
+  height: 540px;
+  background-color: white;
+  border-radius: 2rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.b-header{
+  width: 100%;
+}
+
+.b-content{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.b-back-arrow{
+  width: 2rem;
+  position: relative;
+  top:1rem;
+  left: 1rem;
+}
+
+.b-user-image{
+  height: 6rem;
+  border-radius: 50%;
+}
+
+.b-block-button{
+  margin: 2rem;
+  background-color: green;
+}

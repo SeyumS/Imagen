@@ -1,0 +1,21 @@
+.masonry-grid {
+  display: flex;
+  margin-left: -16px;
+  width: 100%;
+}
+
+.masonry-item {
+  margin-left: 16px;
+  margin-bottom: 16px;
+  width: 33.33%;
+}
+
+.masonry-sizer {
+  width: 33.33%;
+}
+
+.home-image {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+}
