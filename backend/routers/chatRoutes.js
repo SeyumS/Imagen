@@ -6,8 +6,8 @@ const router = express.Router()
 
 router.use(protect);
 
-router.route('/').get(getAllChats)
+router.route('/:id').get(getAllChats)
 
-router.route('/:id').get(getAllMessages)
-                          .put(saveMessage)
+router.route('/:id/:chatid').get(getAllMessages)
+router.route('/:id/:chatid').put(saveMessage)
 export default router

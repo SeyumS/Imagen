@@ -1,7 +1,7 @@
 import express from 'express'
-import {getUser,/*getMe, updateMe, uploadUserPhoto,deleteMe,*/createUser,getAllUsers, updatePinBoardId} from './../controllers/userController.js';
-/*import {signup, login, forgotPassword, 
-resetPassword, updatePassword,protect} from './../controllers/authController.js';*/
+import {getUser,getMe, updateMe, uploadUserPhoto,deleteMe,createUser,getAllUsers, updatePinBoardId} from './../controllers/userController.js';
+import {signup, login, forgotPassword, 
+resetPassword, updatePassword,protect} from './../controllers/authController.js';
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ router.route('/').get(getAllUsers).post(createUser).patch(updatePinBoardId);
 
 router.route('/:id').get(getUser);
 
-/*router.post('signup',signup)
+router.post('signup',signup)
 router.post('/login',login);
 
 router.post('/forgotPassword', forgotPassword)
@@ -22,6 +22,6 @@ router.patch('/updateMyPassword', updatePassword)
 router.route('/me').get(getMe)
                    .patch(updateMe)
                    .put(uploadUserPhoto)
-                   .delete(deleteMe)*/
+                   .delete(deleteMe)
 
 export default router

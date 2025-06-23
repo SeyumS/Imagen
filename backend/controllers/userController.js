@@ -28,6 +28,10 @@ export const uploadUserPhoto = upload.single('photo');
 
 export const getMe= (req, res, next) =>{
   req.params.id = req.user.id;
+  const userId = req.user.id;
+  res.status(200).json({
+    userId
+  });
   next();
 }
 
@@ -43,7 +47,7 @@ export const updatePinBoardId = async(req,res,next)=>{
   })
 }
 
-/*export const updateMe = async (req,res,next)=>{
+export const updateMe = async (req,res,next)=>{
   if(req.body.password || req.body.passwordConfirm){
     return next(new AppError('This route is not for password updates. Please use /updatePassword', 400));
   }
@@ -63,7 +67,7 @@ res.status(204).json({
   status: 'success',
   data: null
 })
-}*/
+}
 
 export const getUser = async (req,res,next)=>{
   const user = await User.findById(req.params.id);

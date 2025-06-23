@@ -3,7 +3,7 @@ import Chat from './../models/chatModel.js'
 import User from './../models/userModel.js'
 
 export const getAllChats = async (req,res,next)=>{
-   const user = await User.findById(req.params.Id).populate({path: 'chats'})
+   const user = await User.findById(req.params.id).populate({path: 'chats'})
    allChats = user.chats
    
    if(!allChats){
@@ -19,8 +19,10 @@ export const getAllChats = async (req,res,next)=>{
 };
 
 export const getAllMessages= async (req,res,next)=>{
-  const chat = await Chat.findById(req.params.id);
-  const messages = chat.find();
+  const user = await User.findById(req.params.id);
+  const chats = user.chats
+  const chat = chats.find((chat)=> chat._id.toString() === req.params.chatid)
+  const messages = chat.messages;
   res.status(200).json({
    status:'success',
    data:{
@@ -30,7 +32,8 @@ export const getAllMessages= async (req,res,next)=>{
 };
 
 export const saveMessage= async (req,res,next)=>{
-  const message = await Chat.create(req.body)
+  const message = await new message(req.body)
+  const chat = Chat.findById(req.params.id)
 
   res.status(200).json({
    status:'success',
@@ -39,3 +42,7 @@ export const saveMessage= async (req,res,next)=>{
    }
   })
 };
+
+export const createChat = async(req,res,next)=>{
+  const chat = await Chat.create
+}

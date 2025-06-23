@@ -1,15 +1,13 @@
 import mongoose from 'mongoose'
 
 const chatSchema = mongoose.Schema({
-  chats:[{
+  chat:{
     messages:[{
       contend:{
         type: String,
       },
-      user:{
-        type: mongoose.Schema.ObjectId,
-        ref:'User',
-        required: [true, 'a message must have a user'],
+      sender:{
+        type: String
       },timestamp:{
         type: Date,
         default: Date.now(),
@@ -19,7 +17,7 @@ const chatSchema = mongoose.Schema({
       type: mongoose.Schema.ObjectId,
       ref: 'User'
     }]
-  }]
+  }
   
 })
 

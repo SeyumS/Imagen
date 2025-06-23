@@ -19,7 +19,9 @@ type Chat = {
 function Chats() {
   useEffect(()=>{
     const fetchChats =async ()=>{
-    const response = await fetch('http://localhost/imagen/api/v1/chats/')
+    const userIdRaw = await fetch('http://localhost/imagen/api/v1/me');
+    const userId = userIdRaw.json();
+    const response = await fetch(`http://localhost/imagen/api/v1/chats/${userId}`)
     const chatData = await response.json()
    setChats(chatData)
     }
