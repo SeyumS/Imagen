@@ -1,10 +1,33 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import { Link} from  'react-router-dom';
 import City from './../assets/city.jpeg'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Chats.css'
+type message={
+  text: string,
+  sender: string,
+}
+type Chat = {
+  img: string,
+  name: string,
+  lastMessage: message,
+  timestamp: Date,
+  messages: message[]
+}
+
 
 function Chats() {
+  useEffect(()=>{
+    const fetchChats =async ()=>{
+    const response = await fetch('http://localhost/imagen/api/v1/chats/')
+    const chatData = await response.json()
+   setChats(chatData)
+    }
+    fetchChats()
+  },[])
+
+  const[chats, setChats] = useState<Chat[]>([])
+  
   return (
     <div className='texts-container'>
     <div className='header'>
@@ -39,6 +62,18 @@ function Chats() {
           </div>
         </div>
         </Link>
+        {chats.map((chat)=>(
+          <div className='chat p-2'>
+          <img className='contact-img' src={chat.img}/>
+          <div className='chat-subdiv'>
+          <p className='contact-name'>{chat.name}</p>
+          <p className='last-message'>{chat.lastMessage.text}</p>
+          </div>
+          <div className = 'timestamp-div p-2 m-3'>
+          <p className='timestamp'>{chat.timestamp.toDateString()}</p>
+          </div>
+          </div>
+        ))}
        </div>
   </div>
   )
