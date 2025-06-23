@@ -1,11 +1,11 @@
 import express from 'express'
-import {getUser,/*getMe, updateMe, uploadUserPhoto,deleteMe,*/createUser,getAllUsers, updatePinBoard} from './../controllers/userController.js';
+import {getUser,/*getMe, updateMe, uploadUserPhoto,deleteMe,*/createUser,getAllUsers, updatePinBoardId} from './../controllers/userController.js';
 /*import {signup, login, forgotPassword, 
 resetPassword, updatePassword,protect} from './../controllers/authController.js';*/
 
 const router = express.Router();
 
-router.route('/').get(getAllUsers).post(createUser).patch(updatePinBoard);
+router.route('/').get(getAllUsers).post(createUser).patch(updatePinBoardId);
 
 router.route('/:id').get(getUser);
 

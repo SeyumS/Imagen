@@ -31,7 +31,7 @@ export const getMe= (req, res, next) =>{
   next();
 }
 
-export const updatePinBoard = async(req,res,next)=>{
+export const updatePinBoardId = async(req,res,next)=>{
   const user = await User.findById(req.body.userId)
   const updatedUser = await User.updateOne({_id: user._id}, {$push:{pinBoards: req.body.pinBoardId}})
 

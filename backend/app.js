@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 import chatRouter from './routers/chatRoutes.js'
 import pinRouter from './routers/pinRoutes.js'
@@ -15,6 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
+app.use(cors({origin: 'http://localhost:5173'}))
 
 app.use('/imagen/api/v1/chats', chatRouter)
 app.use('/imagen/api/v1/posts', postRouter)

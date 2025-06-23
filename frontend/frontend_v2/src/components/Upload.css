@@ -1,0 +1,39 @@
+.upload-container{
+  width: 100vw;
+  height: 100vh;
+  padding-left: 5rem;
+  display: flex;
+  flex-direction: row;
+}
+
+.image-upload-container{
+  width: 40vw;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-image-upload{
+  width: 80%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: grey;
+}
+
+.upload-plus-icon{
+} 
+
+.upload-form-container{
+  width: 100%;
+}
+
+.upload-form{
+  width: 100%;
+}
+
+.description-form{
+  height: 6rem; 
+}

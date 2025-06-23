@@ -13,7 +13,6 @@ const pinSchema = mongoose.Schema({
   pinBoards:[{
       type: mongoose.Schema.ObjectId,
       ref:'PinBoard',
-      unique: true,
   }],
  createdAt:{
   type: Date,
@@ -24,11 +23,8 @@ const pinSchema = mongoose.Schema({
     ref: 'User'
   },
   likedBy:[{
-    userId:{
     type: mongoose.Schema.ObjectId,
     ref:'User',
-    unique:true
-    }
   }],
   comments:[{
      type: mongoose.Schema.ObjectId,

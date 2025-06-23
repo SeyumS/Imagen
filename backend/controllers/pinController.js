@@ -19,7 +19,7 @@ export const getAllPinboards = async(req, res, next)=>{
 export const createNewPinboard = async(req, res, next)=>{
 
   const newPinBoard = await PinBoard.create(req.body)
-  const updatedUser = User.findByIdAndUpdate(req.params.id,{$push:{pinBoards: newPinBoard._id}},{new: true})
+  const updatedUser = await User.findByIdAndUpdate(req.params.id,{$push:{pinBoards: newPinBoard._id}},{new: true})
   
    res.status(200).json({
      status: 'success',
@@ -30,10 +30,17 @@ export const createNewPinboard = async(req, res, next)=>{
    })
 }
 
-export const updatePinboard = async(req,res,next)=>{
-  const pinBoard = await PinBoard.findById(req.body.pinBoardId);
-  const updatedPinBoard = await PinBoard.updateOne({_id: pinBoard._id}, {$push:{pinBoards: req.body.postId}})
-
+export const addPost = async(req,res,next)=>{
+  const updatedPinBoard = await PinBoard.findByIdAndUpdate({_id: req.params.id}, {$push:{posts: req.body._id}})
+  console.log('Req Params: ')
+  console.log(req.params.id)
+  
+  res.status(200).json({
+    status: 'success',
+    data:{
+      updatedPinBoard
+    }
+  })
 }
 
 export const getAllPostsOfPinboard = async(req, res,next)=>{

@@ -1,5 +1,6 @@
 import Pin from './../models/postModel.js'
 import Comment from './../models/commentModel.js'
+import PinBoard from './../models/pinBoardModel.js'
 import Add from './../models/addModel.js'
 import AppError from '../utils/AppError.js';
 
@@ -19,25 +20,31 @@ export const getAllPosts= async(req,res,next)=>{
   if(!posts){
     return next(new AppError('no Post found', 400))
   }
+  const limitedPosts = posts.slice(0, 100)
   res.status(200).json({
     status: 'success',
     data:{
-     posts
+     limitedPosts
     }
   })
 }
 
 export const createPost = async(req,res,next)=>{
-  console.log(req.body);
   const post = await Pin.create(req.body);
+  //console.log(post);
+  //console.log('___________________')
+  
   if(!post){
     return next(new AppError('no Post created', 400))
   }
+  //const updatedPinBoard = await PinBoard.findByIdAndUpdate(req.body.Data.pinBoardId,{$push:{posts: post._id}},{new: true});
+  
   console.log(post);
   res.status(200).json({
     status: 'success',
     data:{
-     data: post
+    // pinBoard: updatedPinBoard,
+     post: post
     }
   })
 }
@@ -64,11 +71,23 @@ export const deleteComment = async(req, res, next)=>{
 
 export const addLike = async(req, res, next)=>{
   const {postId, userId} = req.body
-  await Pin.findByIdAndUpdate(postId, {$addToSet:{likes: userId}});
+  const updatedUser = await Pin.findByIdAndUpdate(postId, {$addToSet:{likes: userId}});
+  res.status(200).json({
+  status: 'success',
+  data:{
+    updatedUser
+  }
+  })
 }
 
 export const removeLike = async(req, res, next)=>{
   const {postId, userId} = req.body
-  await Pin.findByIdAndUpdate(postId, {$pull:{likes: userId}});
+  const updatedUser = await Pin.findByIdAndUpdate(postId, {$pull:{likes: userId}});
+  res.status(200).json({
+    status: 'success',
+    data:{
+      updatedUser
+    }
+    })
 } 
 

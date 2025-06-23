@@ -1,0 +1,54 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import {createBrowserRouter, RouterProvider} from  'react-router-dom';
+
+import Home from './components/Home.tsx'
+import Chats from './components/Chats.tsx'
+import Chat from './components/Chat.tsx'
+import Pinned from './components/Pinned.tsx'
+import Post from './components/Post.tsx'
+import User from './components/User.tsx'
+import Upload from './components/Upload.tsx'
+import Pinwall from './components/Pinwall.tsx'
+import App from './App.tsx'
+
+const router = createBrowserRouter([
+  {path: '/',
+  element: <App/>,
+  
+  children: [
+      {
+        path: '/home',
+        element: <Home/>
+      },{
+        path: '/upload',
+        element: <Upload/>
+      },{
+        path: '/chats',
+        element: <Chats/>
+      },{
+        path: '/pinned',
+        element: <Pinned/>
+      },{
+        path: '/post/:postid',
+        element: <Post/>
+      },{
+        path: '/user/:userid',
+        element: <User/>
+      },{
+        path: '/pinwall/:pinwallid',
+        element: <Pinwall/>
+      }
+  ]
+  },{
+    path: '/chats/:chatid',
+    element: <Chat/>
+  }
+]);
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+     <RouterProvider router={router} />
+  </StrictMode>,
+)
