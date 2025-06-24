@@ -40,7 +40,7 @@ function Chats() {
         <p className='show-all'>show all</p>
         </div>
         <div className='chats-container'>
-          <Link to={'/chats/user123'}>
+          <Link to={'/chats/user/user123'}>
           <div className='chat p-2'>
             <img className='contact-img' src={City}/>
             <div className='chat-subdiv'>

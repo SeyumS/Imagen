@@ -25,7 +25,7 @@ const router = createBrowserRouter([
         path: '/upload',
         element: <Upload/>
       },{
-        path: '/chats',
+        path: '/chats/:id',
         element: <Chats/>
       },{
         path: '/pinned',
@@ -42,7 +42,7 @@ const router = createBrowserRouter([
       }
   ]
   },{
-    path: '/chats/:chatid',
+    path: '/chats/:id/:chatid',
     element: <Chat/>
   }
 ]);

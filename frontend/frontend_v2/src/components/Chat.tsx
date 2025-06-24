@@ -15,19 +15,20 @@ function Chat() {
 
   const navigate = useNavigate();
 
-  const{chatid} = useParams()
-
+  const{id, chatid} = useParams();
+ 
   useEffect(()=>{
     const fetchMessages =async()=>{
       
-      const url = `http//localhost:3000/imagen/api/v1/${chatid}`
+      const url = `http://localhost:3000/imagen/api/v1/${id}/${chatid}`
      const response = await fetch(url)
      const chatData = await response.json()
      setChatMessages(chatData)
     }
     fetchMessages()
   },[])
- 
+
+  
   const [chatMessages, setChatMessages] = useState<message[]>([])
 
   const [inputValue, setInputValue] = useState<string>('')
@@ -38,7 +39,7 @@ function Chat() {
     }
   }
 
-  const sendMessage = ()=>{
+  const sendMessage = async()=>{
     if(inputValue.trim() === '')return
 
     const newMessage = {
@@ -46,10 +47,26 @@ function Chat() {
       sender: "I",
       timestamp: new Date().toLocaleTimeString()
     }
+    const url = `http://localhost:3000/imagen/api/v1/${id}/${chatid}`
+      await fetch(url,{method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      body: JSON.stringify(newMessage)
+    })
+    
     const updatedMessages = [...chatMessages, newMessage]
     setChatMessages(updatedMessages)
     setInputValue('')
-  
+
+    if(chatMessages.length===1){
+
+      const users = [id, chatid]
+
+      const response = await fetch(url,{method: 'POST',headers:{'Content-Type': 'application/json'},
+      body: JSON.stringify({chatMessages, users})})
+      console.log(response)
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) =>{
