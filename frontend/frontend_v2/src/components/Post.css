@@ -115,3 +115,7 @@
 .post-user-name{
   font-weight: bold;
 }
+
+.pin-heart:active{
+ flex-grow: 0.02;
+}

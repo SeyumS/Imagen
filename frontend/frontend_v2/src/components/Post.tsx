@@ -1,6 +1,7 @@
-import React from 'react'
+import React,{useState, useEffect} from 'react'
 import {} from 'react-bootstrap'
 import Masonry,{ResponsiveMasonry} from 'react-responsive-masonry'
+import {useParams} from 'react-router-dom'
 
 import massawa from './../assets/massawa.jpg'
 import monalisa from './../assets/monalisa.jpg'
@@ -10,9 +11,39 @@ import city from './../assets/city.jpeg'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Post.css'
 
-
+type post={
+  id: string,
+  image: string,
+  description: string,
+  keywords:[string],
+  pinBoards:string
+ createdAt: Date
+  createdBy:string
+  likedBy:[string],
+  comments:[string]
+}
 
 function Post() {
+
+  const [feed, setFeed] = useState<post[]>([])
+
+  useEffect(()=>{
+   const loadFeed=async()=>{
+    const response = await fetch(`http://localhost:3000/imagen/api/v1/posts/`)
+    const feedData = await response.json();
+    console.log(feedData)
+    setFeed(feedData.data.limitedPosts)
+   }
+   loadFeed()
+  })
+
+  const{postid}=useParams()
+  const handlePinPost = async ()=>{
+    const url=`http://localhost:3000/imagen/api/v1/post/${postid}`
+    const response = await fetch(url, {method:'PUT', headers: {'Content-Type': 'application/json'}})
+    console.log(response)
+  }
+
   return (
         <div className='post-container'>
   
@@ -90,7 +121,11 @@ function Post() {
             <a href={'/user/user123'}>
             <p className='post-user-name mx-3'>user123</p>
             </a>
-            
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-heart mx-2 pin-heart" viewBox="0 0 16 16">
+              <path d="M8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01z"  onClick={handlePinPost}/>
+            </svg>
+
           </div>
   
           {/* Feed Section */}
@@ -106,6 +141,11 @@ function Post() {
                 <img src={guitar} className='home-image img-fluid' />
                 <img src={massawa} className='home-image img-fluid' />
                 <img src={guitar} className='home-image img-fluid' />
+                {feed.map((post)=>(
+                  <a href={`/post/${postid}`}>
+                  <img src={post.image} alt='image' className='home-image img-fluid'/>
+                  </a>
+                ))}
               </Masonry>
             </ResponsiveMasonry>
           </div>

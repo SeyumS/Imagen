@@ -1,11 +1,23 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import './Pinned.css'
-import {Link} from 'react-router-dom'
+import {Link, useParams} from 'react-router-dom'
 import massawa from './../assets/massawa.jpg'
 import monalisa from './../assets/monalisa.jpg'
 import guitar from './../assets/guitar.jpeg'
 import Masonry,{ResponsiveMasonry} from 'react-responsive-masonry'
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+type post={
+  id: string,
+  image: string,
+  description: string,
+  keywords:[string],
+  pinBoards:string
+ createdAt: Date
+  createdBy:string
+  likedBy:[string],
+  comments:[string]
+}
 
 function Pinned() {
 
@@ -19,6 +31,20 @@ const handleClickOnPinwalls = () =>{
   setOnPins(false);
   setOnPinwalls(true)
 }
+
+const [pinnedPosts, setPinnedPosts] =useState<post[]>([])
+
+const {pinid} = useParams()
+useEffect(()=>{
+  const fetchPins = async () =>{
+  const url= `http://localhost:3000/imagen/api/v1/${pinid}`
+
+  const response = await fetch(url)
+  const pinData = await response.json()
+  setPinnedPosts(pinData)
+  }
+  fetchPins()
+},[])
 
   return (
     <div className='pinned-container'>
@@ -50,6 +76,11 @@ const handleClickOnPinwalls = () =>{
         <img src={guitar} className='home-image img-fluid'/>
         <img src={massawa} className='home-image img-fluid'/>
           <img src={guitar} className='home-image img-fluid'/>
+        {pinnedPosts.map((post)=>(
+          <a href={`/post/${post.id}`}>
+          <img src={post.image} alt={post.description}/>
+          </a>
+        ))}
           </Masonry>
         </ResponsiveMasonry>
         

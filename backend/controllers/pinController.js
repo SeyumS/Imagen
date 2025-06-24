@@ -55,8 +55,8 @@ export const getAllPostsOfPinboard = async(req, res,next)=>{
   })
 }
 
-/*export const pinPost = async(req, res, next)=>{
-  const post = await Pin.findById(req.body)
+export const pinPost = async(req, res, next)=>{
+  const post = await Pin.findById(req.params.id)
   const pinBoard = PinBoard.findbyIdAndUpdate(req.params.id,{$push:{ posts: post}},{new: true})
  
   res.status(200).json({
@@ -84,4 +84,4 @@ export const removePost =async(req,res,next)=>{
     status: 'success',
     data: null
   })
-}*/
+}
