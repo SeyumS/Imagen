@@ -15,7 +15,7 @@ const createSendToken = (user, statusCode, res)=>{
     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000), httpOnly:true,
   };
   if(process.env.NODE_ENV === 'production')cookieOptions.secure = true;
-  res.cookie('jwt', token, cookieOptions)
+  res.cookie('jwt', token, cookieOptions);
   user.password = undefined;
 
   res.status(statusCode).json({
@@ -36,16 +36,29 @@ export const signup = async (req,res,next)=>{
 
 export const login = async(req, res, next)=>{
   const {email, password} = req.body;
-
+  
   if(!email || !password){
-    return next(newAppError('Please provide email and password!', 404));
+    return next(new AppError('Please provide email and password!', 404));
   }
   const user = await User.findOne({email}).select('+password');
 
   if(!user || !(await user.correctPassword(password, user.password))){
-    return next(new AppError('Incorrect email or password', 401))
+    return res.status(401).json({
+      data:{
+        message: 'incorrect email or password!'
+      }
+    })
+    /*next(new AppError('Incorrect email or password', 401))*/
+    
   }
   createSendToken(user, 200, res);
+
+  res.status(200).json({
+    status: 'success',
+    data:{
+       message: 'you are sucessfully logged in!'
+    }
+  })
 };
 
 export const logout = (req, res) => {

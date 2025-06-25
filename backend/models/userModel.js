@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import validator from 'validator'
+import bcrypt from 'bcryptjs'
 
 const userSchema = mongoose.Schema({
   name:{
@@ -66,8 +67,32 @@ userSchema.pre(/^find/, function(next){
   next();
 })
 
+userSchema.pre('save', async function(next){
+  //only run this function if password was modified
+  if(!this.isModified('password')) return next();
+  // hash the password with cost of 12
+  this.password = await bcrypt.hash(this.password, 12);
+  // Delete the password confirm field(to free storage)
+  this.passwordConfirm = undefined;
+});
+
+userSchema.pre('save', function(next){
+   if (!this.isModified('password') || this.isNew) return next()
+
+    this.passwordChangedAt = Date.now() - 1000;
+    next();
+});
+//filter out inactive users from findqueries
+userSchema.pre(/^find/, function(next) {
+// this points to the current query
+this.find({active: {$ne: false}});
+next();
+})
+
 userSchema.methods.correctPassword = async function(candidatePassword, userPassword){
-  return await bycript.compare(candidatePassword, userPassword);
+  console.log(candidatePassword, userPassword)
+
+  return await bcrypt.compare(candidatePassword, userPassword);
 }
 
 userSchema.methods.changedPasswordAfter = function(JWTTimestamp){

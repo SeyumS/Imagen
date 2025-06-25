@@ -9,7 +9,7 @@ router.route('/').get(getAllUsers).post(createUser).patch(updatePinBoardId);
 
 router.route('/:id').get(getUser);
 
-router.post('signup',signup)
+router.post('/signup',signup)
 router.post('/login',login);
 
 router.post('/forgotPassword', forgotPassword)

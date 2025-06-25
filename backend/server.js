@@ -15,4 +15,16 @@ const DB ='mongodb+srv://20samuels02:0K91WORtIFJiRbcK@cluster0.7cgcfx8.mongodb.n
 
 await mongoose.connect(DB).then(()=>{console.log('DB connection successful!')})
 
+/*const newUser={
+  name: "mike musterman",
+  photo: "https://images.unsplash.com/placeholder-avatars/extra-large.jpg?ixlib=…",
+  password: "test1234",
+  passwordConfirm: "test1234",
+  email: "musterman@gmail.com",
+  followercount: 0,
+  followingcount: 0,
+  phoneNumber: "54678 3645305",
+}
+const user = User.create(newUser);*/
+
 

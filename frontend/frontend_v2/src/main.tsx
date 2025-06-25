@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from  'react-router-dom';
 
+import Login from './components/Login.tsx'
 import Home from './components/Home.tsx'
 import Chats from './components/Chats.tsx'
 import Chat from './components/Chat.tsx'
@@ -14,7 +15,12 @@ import Pinwall from './components/Pinwall.tsx'
 import App from './App.tsx'
 
 const router = createBrowserRouter([
-  {path: '/',
+  {
+    path: '/login',
+    element: <Login/>
+  },
+  {
+    path: '/',
   element: <App/>,
   
   children: [

@@ -1,20 +1,20 @@
-import React,{useState} from 'react'
+import React from 'react'
 import { Outlet} from  'react-router-dom';
 import {} from 'react-bootstrap'
 
 import Logo from './assets/logo.png'
-import Login from './components/Login.tsx'
+//import Login from './components/Login.tsx'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 
 function App() {
   
-const [isLoggedIn, setIsLoggedIn]= useState<boolean>(false)
+//const [isLoggedIn, setIsLoggedIn]= useState<boolean>(false)
 
   return (
     <div>
-    {isLoggedIn ?
+    {/*{isLoggedIn ?*/
       <div className='contaier'>
         <nav className="navbar bg-dark bg-body-tertiary nav-container">
         <div className="container-fluid nav-container">
@@ -58,9 +58,9 @@ const [isLoggedIn, setIsLoggedIn]= useState<boolean>(false)
         <Outlet/>
         </div>
     </div>
-    :
+   /* :
     <Login setIsLoggedIn = {setIsLoggedIn}/>
-    }
+    }*/}
   </div>
   )
 }

@@ -1,25 +1,33 @@
 import React,{useState} from 'react'
 
 import './Login.css'
+import { useNavigate } from 'react-router-dom'
 
-type Props={
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
-}
-function Login({setIsLoggedIn}: Props) {
 
-  const inputData1= ''
-  const inputData2= ''
+function Login() {
 
-  const[loginData, setLoginData] = useState<string[]>([])
+  const navigate= useNavigate();
+  
+  const[email, setEmail]=useState<string>('')
+  const[password, setPassword]=useState<string>('')
+  const[message,setMessage]=useState<string>('')
+  
 
   const handleFormSubmit = async() =>{
-    setLoginData([inputData1,inputData2])
+    
     try{
-      await fetch('http:/localhost:3000/imagen/api/v1/users/login', {method: 'POST', headers:{'Content-Type': 'application/json'},
-      body: JSON.stringify(loginData)}
+      const response = await fetch('http://localhost:3000/imagen/api/v1/users/login', {method: 'POST', headers:{'Content-Type': 'application/json'},
+      body: JSON.stringify({email,password})}
         
       )
-    setIsLoggedIn(true)
+      const data = await response.json()
+      console.log(data)
+      setMessage(data.data.message)
+      if(message==='you are successfully logged in!'){
+        
+        navigate('/')
+      }
+     
     }catch{
       console.log("couldn't login")
     }
@@ -29,17 +37,20 @@ function Login({setIsLoggedIn}: Props) {
      <form className='form-contianer'action={handleFormSubmit}>
       <div className="from-email-div">
         <label htmlFor="" className="email-label">email</label>
-        <input type="text" className="from-email-input" value={inputData}/>
+        <input type="email" className="from-email-input" value={email} onChange={(e) =>setEmail(e.target.value)}/>
       </div>
       <div className="password-div">
       <label htmlFor="" className="password-label">password</label>
-          <input type="text" className="from-password-input" />
+          <input type="text" className="from-password-input" value={password} onChange={(e)=>setPassword(e.target.value)}/>
       </div>
       <div className="from-button-div">
         <button className="form-submit-button" type='submit'>
           submit
         </button>
       </div>
+      <label className="form-message-label">
+        {message}
+      </label>
      </form>
     </div>
   )
