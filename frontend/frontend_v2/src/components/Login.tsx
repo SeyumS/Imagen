@@ -23,9 +23,9 @@ function Login() {
       const data = await response.json()
       console.log(data)
       setMessage(data.data.message)
-      if(message==='you are successfully logged in!'){
+      if(data.status==='success'){
         
-        navigate('/')
+        navigate('/home')
       }
      
     }catch{

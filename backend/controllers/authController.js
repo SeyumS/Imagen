@@ -53,17 +53,11 @@ export const login = async(req, res, next)=>{
   }
   createSendToken(user, 200, res);
 
-  res.status(200).json({
-    status: 'success',
-    data:{
-       message: 'you are sucessfully logged in!'
-    }
-  })
 };
 
 export const logout = (req, res) => {
   res.cookie('jwt', 'loggedout', {
-    expires: new Date(Date.now)+10 * 1000,
+    expires: new Date(Date.now() +10 * 1000),
     httpOnly: true 
   });
   res.status(200).json({status: 'success'});
@@ -80,7 +74,7 @@ export const protect = async (req, res, next)=>{
   if(!token){
     return next(new AppError('You are not logged in!', 401))
   }
-  const decoded = promisify(jwt.verify(token, process.env.JWT_SECRET));
+  const decoded = await promisify(jwt.verify(token, process.env.JWT_SECRET));
 
   const currentUser = await User.findById(decoded.id)
   if(!currentUser){
@@ -89,7 +83,7 @@ export const protect = async (req, res, next)=>{
   if(currentUser.changesPasswordAfter(decoded.iat)){
     return next(new AppError('user recently changed password! please log in again', 401))
   }
-  req.user = currentUser()
+  req.user = currentUser
 };
 
 export const isLoggedIn = async (req, res, next)=>{
@@ -128,7 +122,7 @@ export const forgotPassword = async(req, res ,next)=>{
     return next(new AppError('There is no user with email adress', 404));
   }
   const resetToken = user.createPasswordResetToken();
-  await user.save({validateBeforeSave})
+  await user.save({validateBeforeSave: false})
 
   const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
   try{
@@ -148,7 +142,7 @@ export const forgotPassword = async(req, res ,next)=>{
 }
 
 export const resetPassword = async (req, res, next)=>{
-  const hashedToken =  crypto.createHash('sha259').update(req.params.token).digest('hex');
+  const hashedToken =  crypto.createHash('sha256').update(req.params.token).digest('hex');
 
   const user = await User.findOne({
     passwordResetToken: hashedToken,
@@ -171,7 +165,7 @@ export const resetPassword = async (req, res, next)=>{
 export const updatePassword = async (req, res, next) => {
   const user = await User.findById(req.user.id).select('+password');
 
-  if(!(user.correctpassword(req.body.passwordCurrent, user.password))){
+  if(!(await user.correctpassword(req.body.passwordCurrent, user.password))){
     return next(new AppError('Your current password is wrong', 401))
   }
   user.password = req.body.password;
