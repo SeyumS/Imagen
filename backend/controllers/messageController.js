@@ -33,6 +33,7 @@ export const getAllMessages= async (req,res,next)=>{
 
 export const saveMessage= async (req,res,next)=>{
   const message = await new message(req.body)
+  console.log(req.body)
   const updatedChat = Chat.findByIdAndUpdate(req.params.id,{$push:{messages: message} })
 
   res.status(200).json({

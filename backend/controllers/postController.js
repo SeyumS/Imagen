@@ -6,7 +6,7 @@ import AppError from '../utils/AppError.js';
 
 export const getPost = async(req,res,next)=>{
   const post = await Pin.findById(req.params.id);
-  console.log(post)
+  console.log(post);
   res.status(200).json({
     status: 'success',
     data:{
@@ -39,7 +39,7 @@ export const createPost = async(req,res,next)=>{
   }
   //const updatedPinBoard = await PinBoard.findByIdAndUpdate(req.body.Data.pinBoardId,{$push:{posts: post._id}},{new: true});
   
-  console.log(post);
+  //console.log(post);
   res.status(200).json({
     status: 'success',
     data:{

@@ -37,13 +37,13 @@ const router = createBrowserRouter([
         path: '/pinned',
         element: <Pinned/>
       },{
-        path: '/post/:postid',
+        path: '/post/:id',
         element: <Post/>
       },{
-        path: '/user/:userid',
+        path: '/user/:id',
         element: <User/>
       },{
-        path: '/pinwall/:pinwallid',
+        path: '/pinwall/:id',
         element: <Pinwall/>
       }
   ]

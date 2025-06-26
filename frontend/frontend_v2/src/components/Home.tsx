@@ -8,6 +8,7 @@ import './Home.css'
 function Home() {
   
   type Image={
+    _id: string,
     image: string,
     description: string,
     keywords: string,
@@ -64,8 +65,10 @@ fetchFeed()
             <Masonry gutter='10px' className='h-masonry-column'>
       
             {posts.map((post, id)=>(
+              <a href={`/post/${post._id}`}>
               <img src={post.image} alt='image'
               className={`${id} home-image img-fluid`}/>
+          </a>
           ))}
             </Masonry>
           </ResponsiveMasonry> 

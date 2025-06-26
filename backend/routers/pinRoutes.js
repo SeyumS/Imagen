@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.route('/:id').get(getAllPostsOfPinboard).patch(addPost)
 router.route('/').get(getAllPinboards).post(createNewPinboard)
-/* idbei zweter route entfernen*/
+/* id bei zweter route entfernen*/
 
 //router.use(protect)
 

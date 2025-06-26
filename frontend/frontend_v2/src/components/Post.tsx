@@ -6,7 +6,7 @@ import {useParams} from 'react-router-dom'
 import massawa from './../assets/massawa.jpg'
 import monalisa from './../assets/monalisa.jpg'
 import guitar from './../assets/guitar.jpeg'
-import city from './../assets/city.jpeg'
+//import city from './../assets/city.jpeg'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Post.css'
@@ -23,25 +23,69 @@ type post={
   comments:[string]
 }
 
+type user={
+  name: string,
+  active: boolean,
+  photo: string
+  description: string,
+  password: string,
+  passwordConfirm:string,
+  email: string,
+  pinBoards:[string]
+  followercount:number,
+  followingcount:number,
+  phoneNumber:string,
+  chats:[string]
+}
+
+
+
 function Post() {
 
+  const[post, setPost]=useState<post|null>(null)
+
+  const[user, setUser]=useState<user|null>(null)
+
   const [feed, setFeed] = useState<post[]>([])
+
+  const{id}=useParams()
+
+  useEffect(()=>{
+    const loadPost =async () =>{
+      const response = await fetch(`http://localhost:3000/imagen/api/v1/posts/${id}`)
+      const postData = await response.json();
+      setPost(postData.data.post)
+    }
+    loadPost()
+  },[])
+
+  useEffect(()=>{
+    const loadUser =async () =>{
+      if(post){
+        console.log('hello world')
+        const response = await fetch(`http://localhost:3000/imagen/api/v1/user/${post.createdBy}`)
+      const userData = await response.json();
+      console.log(post)
+      setUser(userData.data.user)
+      }
+    }
+    loadUser()
+  },[])
+
 
   useEffect(()=>{
    const loadFeed=async()=>{
     const response = await fetch(`http://localhost:3000/imagen/api/v1/posts/`)
     const feedData = await response.json();
-    console.log(feedData)
     setFeed(feedData.data.limitedPosts)
    }
    loadFeed()
   })
 
-  const{postid}=useParams()
+  
   const handlePinPost = async ()=>{
-    const url=`http://localhost:3000/imagen/api/v1/post/${postid}`
-    const response = await fetch(url, {method:'PUT', headers: {'Content-Type': 'application/json'}})
-    console.log(response)
+    const url=`http://localhost:3000/imagen/api/v1/post/${id}`
+    await fetch(url, {method:'PUT', headers: {'Content-Type': 'application/json'}})
   }
 
   return (
@@ -53,7 +97,7 @@ function Post() {
             
               {/* Post Image */}
               <div className='post-image-container'>
-                <img src={monalisa} alt='post' className='img-fluid m-2' />
+                <img src={post? post.image : ''} alt='post' className='img-fluid m-2' />
               </div>
   
               {/* Comments */}
@@ -116,7 +160,7 @@ function Post() {
           
           <div className="post-user-container mb-4 mx-5 px-4">
             <a href={'/user/user123'}>
-            <img src={city} className='post-user-photo img-fluid ml-5'/>
+            <img src={user? user.photo: ''} className='post-user-photo img-fluid ml-5'/>
             </a>
             <a href={'/user/user123'}>
             <p className='post-user-name mx-3'>user123</p>
@@ -142,7 +186,7 @@ function Post() {
                 <img src={massawa} className='home-image img-fluid' />
                 <img src={guitar} className='home-image img-fluid' />
                 {feed.map((post)=>(
-                  <a href={`/post/${postid}`}>
+                  <a href={`/post/${id}`}>
                   <img src={post.image} alt='image' className='home-image img-fluid'/>
                   </a>
                 ))}

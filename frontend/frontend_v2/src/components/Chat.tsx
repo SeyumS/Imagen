@@ -96,10 +96,10 @@ function Chat() {
        </Link>
       </div>
       <div className="c-chat-messages-container p-3 ">
-        {chatMessages.map((message)=>(
+        {chatMessages.map((message, id)=>(
           message.sender === 'I' ?
           <div className="i-c-chat-row">
-          <div className="i-c-message"><p className='i-c-text m-2'>{message.text}</p></div>
+          <div className={`${id}i-c-message`}><p className='i-c-text m-2'>{message.text}</p></div>
           </div>
           :
           <div className="y-c-chat-row">
