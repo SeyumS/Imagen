@@ -1,12 +1,7 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, useRef} from 'react'
 import {} from 'react-bootstrap'
 import Masonry,{ResponsiveMasonry} from 'react-responsive-masonry'
 import {useParams} from 'react-router-dom'
-
-import massawa from './../assets/massawa.jpg'
-import monalisa from './../assets/monalisa.jpg'
-import guitar from './../assets/guitar.jpeg'
-//import city from './../assets/city.jpeg'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Post.css'
@@ -24,9 +19,10 @@ type post={
 }
 
 type user={
+  _id: string,
   name: string,
   active: boolean,
-  photo: string
+  photo: string,
   description: string,
   password: string,
   passwordConfirm:string,
@@ -44,9 +40,11 @@ function Post() {
 
   const[post, setPost]=useState<post|null>(null)
 
-  const[user, setUser]=useState<user|null>(null)
+  //const[user, setUser]=useState<user|null>(null)
 
   const [feed, setFeed] = useState<post[]>([])
+
+  const user = useRef<user>(null)
 
   const{id}=useParams()
 
@@ -62,16 +60,13 @@ function Post() {
   useEffect(()=>{
     const loadUser =async () =>{
       if(post){
-        console.log('hello world')
-        const response = await fetch(`http://localhost:3000/imagen/api/v1/user/${post.createdBy}`)
+        const response = await fetch(`http://localhost:3000/imagen/api/v1/users/${post.createdBy}`)
       const userData = await response.json();
-      console.log(post)
-      setUser(userData.data.user)
-      }
+      user.current = userData.data.user
+    }
     }
     loadUser()
-  },[])
-
+  },[post])
 
   useEffect(()=>{
    const loadFeed=async()=>{
@@ -159,11 +154,11 @@ function Post() {
           </div>
           
           <div className="post-user-container mb-4 mx-5 px-4">
-            <a href={'/user/user123'}>
-            <img src={user? user.photo: ''} className='post-user-photo img-fluid ml-5'/>
+            <a href={`/user/${user.current ? user.current._id :''}`}>
+            <img src={user.current ? user.current.photo: ''} className='post-user-photo img-fluid ml-5'/>
             </a>
-            <a href={'/user/user123'}>
-            <p className='post-user-name mx-3'>user123</p>
+            <a href={`/user/${user.current ? user.current._id :''}`}>
+            <p className='post-user-name mx-3'>{user.current ? user.current.name : ''}</p>
             </a>
 
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-heart mx-2 pin-heart" viewBox="0 0 16 16">
@@ -176,15 +171,7 @@ function Post() {
           <div className='feed-container'>
             <ResponsiveMasonry columnsCountBreakPoints={{ 1000: 5, 700: 4, 300: 2 }} className='h-masonry-grid mx-2'>
               <Masonry gutter='10px' className='h-masonry-column'>
-                <img src={massawa} className='home-image img-fluid' />
-                <img src={monalisa} className='home-image img-fluid' />
-                <img src={guitar} className='home-image img-fluid' />
-                <img src={monalisa} className='home-image img-fluid' />
-                <img src={massawa} className='home-image img-fluid' />
-                <img src={monalisa} className='home-image img-fluid' />
-                <img src={guitar} className='home-image img-fluid' />
-                <img src={massawa} className='home-image img-fluid' />
-                <img src={guitar} className='home-image img-fluid' />
+               
                 {feed.map((post)=>(
                   <a href={`/post/${id}`}>
                   <img src={post.image} alt='image' className='home-image img-fluid'/>
