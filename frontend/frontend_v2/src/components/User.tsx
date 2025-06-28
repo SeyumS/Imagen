@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import { useNavigate,Link, useParams} from 'react-router-dom'
+import { useNavigate, useParams} from 'react-router-dom'
 import Masonry,{ResponsiveMasonry} from 'react-responsive-masonry'
 
 import X from './../assets/x.jpeg'
@@ -39,9 +39,14 @@ type user={
   chats:[string]
 }
 
+/*type pinboard ={
+  name: string,
+createdAt: Date,
+user:string,
+posts:[string]
+}*/
 
 function User() {
-// mit use params ein fetch request machen
   
   const navigate = useNavigate();
 
@@ -50,25 +55,46 @@ function User() {
   const [user,setUser] = useState<user|null>(null);
   const [feed, setFeed] = useState<post[]>([])
 
+
   useEffect(()=>{
     const loadUser=async()=>{
     const response = await fetch(`http://localhost:3000/imagen/api/v1/users/${id}`);
     const userData = await response.json();
     setUser(userData.data.user);
+    
     }
     loadUser()
   },[id])
-  console.log(user?user.photo: 'empty')
 
-  useEffect(()=>{
-    const loadFeed=async()=>{
-     const response = await fetch(`http://localhost:3000/imagen/api/v1/posts/`)
-     const feedData = await response.json();
-     setFeed(feedData.data.limitedPosts)
-    }
-    loadFeed()
-   })
+  useEffect(() => {
+    const loadFeed = async () => {
+      if (!user?.pinBoards?.length) return;
+  
+      try {
+          const responses = await Promise.all(
+          user.pinBoards.map(async (pinboard: string) => {
+            console.log(pinboard)
+            const response = await fetch(`http://localhost:3000/imagen/api/v1/pinboards/${pinboard}`);
+            
+            const feedPosts = await response.json();
+            //console.log(feedPosts.data.posts)
+            return feedPosts.data.posts
+          
+            
+          })
+        );
+          console.log(responses)
+          const allPosts = responses.flat();
+          setFeed(allPosts);
+        
+      } catch (err) {
+        console.log('Failed to load feed:', err);
+      }
+    };
+    loadFeed();
+  }, [user]); // 🔁 optionally re-run when `user` changes
 
+console.log(feed)
  const[onCreated, setOnCreated] = useState<boolean>(true)
  
 
@@ -121,6 +147,20 @@ function User() {
         
         <div className="u-collages-container">
           
+          <div className="collage">
+          <div className="collage-left">
+            <img src={massawa} className='collage-img'/>
+          </div>
+          <div className='collage-right'>
+          <div className="collage-right-top">
+             <img src={monalisa} className='collage-img'/>
+          </div>
+          <div className="collage-right-bottom">
+             <img src={guitar}className='collage-img' />
+          </div>
+          </div>
+        </div>
+        
           <div className="collage">
             <div className="collage-left">
               <img src={massawa} className='collage-img'/>

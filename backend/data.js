@@ -1,6 +1,6 @@
 const populateUsers= async()=>{
 try{
-  const url = 'https://api.unsplash.com/search/users/?page=7&query=developer&client_id=tZFo_JxgKuUJwBCxomOvjHJhCwz_biCYIQxwcNhBxJ4'
+  const url = 'https://api.unsplash.com/search/users/?page=7&query=user&client_id=tZFo_JxgKuUJwBCxomOvjHJhCwz_biCYIQxwcNhBxJ4'
   const response = await fetch(url)
  
   const data = await response.json()
@@ -39,7 +39,8 @@ const createPinwals = async ()=>{
     let i = 1
     const data = await User.find()
     const users = data
-    //await Pin.deleteMany()
+    //await PinBoard.deleteMany()
+    //move id in router from first to second position
 
     for(const user of users){
       //console.log(pinboard)
@@ -91,7 +92,7 @@ const populatePhotos =async () =>{
 
   //add :id to the route
 
-    for(let i = 400; i<437; i++){
+    for(let i = 0; i<50; i++){
       //console.log(pinboard)
       //console.log('___________________')
       const pinboard = pinboards[i]

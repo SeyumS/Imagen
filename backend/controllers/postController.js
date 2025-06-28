@@ -37,13 +37,13 @@ export const createPost = async(req,res,next)=>{
   if(!post){
     return next(new AppError('no Post created', 400))
   }
-  //const updatedPinBoard = await PinBoard.findByIdAndUpdate(req.body.Data.pinBoardId,{$push:{posts: post._id}},{new: true});
+  const updatedPinBoard = await PinBoard.findByIdAndUpdate(req.body.pinBoards,{$push:{posts: post._id}},{new: true});
   
   //console.log(post);
   res.status(200).json({
     status: 'success',
     data:{
-    // pinBoard: updatedPinBoard,
+     pinBoard: updatedPinBoard,
      post: post
     }
   })

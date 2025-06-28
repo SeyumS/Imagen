@@ -44,8 +44,17 @@ export const addPost = async(req,res,next)=>{
 }
 
 export const getAllPostsOfPinboard = async(req, res,next)=>{
-  const pinboard = await PinBoard.findById(req.params.id);
+
+  const pinboard = await PinBoard.findById(req.params.id).populate('posts');
+  
   const posts = pinboard.posts
+
+  if (!pinboard) {
+    res.status(404).json({
+      status: 'fail',
+      message: `No pinboard found with ID ${req.params.id}`,
+    });
+  }
 
   res.status(200).json({
     status: 'success',
