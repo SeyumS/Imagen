@@ -41,7 +41,7 @@ const userSchema = mongoose.Schema({
   },
   pinBoards:[{
     type: mongoose.Schema.ObjectId,
-    ref: 'pin'
+    ref: 'PinBoard'
   }],
   followercount:{
   type: Number,

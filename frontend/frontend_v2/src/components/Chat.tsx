@@ -20,10 +20,10 @@ function Chat() {
   useEffect(()=>{
     const fetchMessages =async()=>{
       
-      const url = `http://localhost:3000/imagen/api/v1/${id}/${chatid}`
+      const url = `http://localhost:3000/imagen/api/v1/chats/${id}/${chatid}`
      const response = await fetch(url)
      const chatData = await response.json()
-     setChatMessages(chatData)
+     setChatMessages(chatData.data.messages)
     }
     fetchMessages()
   },[])
@@ -47,7 +47,7 @@ function Chat() {
       sender: "I",
       timestamp: new Date().toLocaleTimeString()
     }
-    const url = `http://localhost:3000/imagen/api/v1/${id}/${chatid}`
+    const url = `http://localhost:3000/imagen/api/v1/chats/${id}/${chatid}`
       await fetch(url,{method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -58,6 +58,7 @@ function Chat() {
     const updatedMessages = [...chatMessages, newMessage]
     setChatMessages(updatedMessages)
     setInputValue('')
+    console.log(updatedMessages)
 
     if(chatMessages.length===1){
 

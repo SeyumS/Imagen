@@ -19,9 +19,11 @@ export const getAllChats = async (req,res,next)=>{
 };
 
 export const getAllMessages= async (req,res,next)=>{
-  const user = await User.findById(req.params.id);
+  const {id, chatid} =req.params
+  const user = await User.findById(id);
   const chats = user.chats
-  const chat = chats.find((chat)=> chat._id.toString() === req.params.chatid)
+  console.log('---',chats)
+  const chat = chats.find((chat)=>{chat._id==chatid})
   const messages = chat.messages;
   res.status(200).json({
    status:'success',
@@ -32,9 +34,9 @@ export const getAllMessages= async (req,res,next)=>{
 };
 
 export const saveMessage= async (req,res,next)=>{
-  const message = await new message(req.body)
+  const message = new message(req.body)
   console.log(req.body)
-  const updatedChat = Chat.findByIdAndUpdate(req.params.id,{$push:{messages: message} })
+  const updatedChat = Chat.findByIdAndUpdate(req.params.id, req.params.chatid,{$push:{messages: message} })
 
   res.status(200).json({
    status:'success',

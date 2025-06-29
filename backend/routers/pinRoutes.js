@@ -14,7 +14,7 @@ router.use(protect)
 router.route('/:id').put(pinPost)
 
 
-router.route('/:id/posts/:id').delete(removePost)
+router.route('/:id/posts/:postId').delete(removePost)
 
 router.route()
 

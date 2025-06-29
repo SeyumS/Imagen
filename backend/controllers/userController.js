@@ -1,4 +1,5 @@
 import User from './../models/userModel.js'
+import PinBoard from './../models/pinBoardModel.js'
 import multer from 'multer'
 import AppError from '../utils/AppError.js'
 
@@ -29,10 +30,11 @@ export const uploadUserPhoto = upload.single('photo');
 export const getMe= (req, res, next) =>{
   req.params.id = req.user.id;
   const userId = req.user.id;
+  console.log('-----',userId,'-----');
   res.status(200).json({
     userId
   });
-  next();
+  
 }
 
 export const updatePinBoardId = async(req,res,next)=>{
@@ -70,8 +72,9 @@ res.status(204).json({
 }
 
 export const getUser = async (req,res,next)=>{
-  const user = await User.findById(req.params.id);
-  console.log(req.params);
+  console.log('---',req.params.id,'----');
+  const user = await User.findById(req.params.id).populate('pinBoards').populate('chats');
+  console.log('---',user,'----');
   res.status(200).json({
     status:'success',
     data: {

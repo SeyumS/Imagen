@@ -3,10 +3,6 @@ import { useNavigate, useParams} from 'react-router-dom'
 import Masonry,{ResponsiveMasonry} from 'react-responsive-masonry'
 
 import X from './../assets/x.jpeg'
-//import city from './../assets/city.jpeg'
-import massawa from './../assets/massawa.jpg'
-import monalisa from './../assets/monalisa.jpg'
-import guitar from './../assets/guitar.jpeg'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './User.css'
@@ -23,6 +19,7 @@ type post={
   comments:[string]
 }
 
+
 type user={
   _id: string,
   name: string,
@@ -32,19 +29,33 @@ type user={
   password: string,
   passwordConfirm:string,
   email: string,
-  pinBoards:[string],
+  pinBoards:[pinboard],
   followercount:number,
   followingcount:number,
   phoneNumber:string,
-  chats:[string]
+  chats:[chat]
 }
 
-/*type pinboard ={
+type pinboard ={
+  _id: string,
   name: string,
 createdAt: Date,
 user:string,
 posts:[string]
-}*/
+}
+
+type chat={
+    _id: string
+    messages:[message]
+    users:[string]
+  }
+
+  type message={
+    content: string,
+    sender: string,
+    timestamp:Date,
+  }
+
 
 function User() {
   
@@ -53,18 +64,56 @@ function User() {
   const {id} = useParams()
 
   const [user,setUser] = useState<user|null>(null);
+  const [localUser, setLocalUser]= useState<string|null>(null)
+  const[chat, setChat]= useState<chat|null>(null)
   const [feed, setFeed] = useState<post[]>([])
-
+  const [collections, setCollections]= useState<pinboard[]>([]);
+  const [coverImages, setCoverImages]=useState<string[][]>([])
 
   useEffect(()=>{
     const loadUser=async()=>{
     const response = await fetch(`http://localhost:3000/imagen/api/v1/users/${id}`);
     const userData = await response.json();
     setUser(userData.data.user);
+    const pinwalls = userData.data.user.pinBoards
+    setCollections(pinwalls)
     
     }
     loadUser()
   },[id])
+
+
+  useEffect(()=>{
+    const loadCoverImages=async()=>{
+      try {
+        const responses = await Promise.all(
+        collections.map(async (collection: pinboard) => {
+          const response1 = await fetch(`http://localhost:3000/imagen/api/v1/posts/${collection.posts[0]}`);
+          
+          const image1 = await response1.json();
+
+          const response2 = await fetch(`http://localhost:3000/imagen/api/v1/posts/${collection.posts[1]}`);
+          
+          const image2  = await response2.json();
+
+          const response3 = await fetch(`http://localhost:3000/imagen/api/v1/posts/${collection.posts[2]}`);
+          
+          const image3 = await response3.json();
+          
+          return [image1.data.post.image, image2.data.post.image, image3.data.post.image]
+        })
+      );
+        const covers = responses;
+        console.log(responses)
+       setCoverImages(covers);
+      
+    } catch (err) {
+      console.log('Failed to load cover images:', err);
+    }
+      
+    }
+    loadCoverImages()
+  },[collections])
 
   useEffect(() => {
     const loadFeed = async () => {
@@ -72,9 +121,8 @@ function User() {
   
       try {
           const responses = await Promise.all(
-          user.pinBoards.map(async (pinboard: string) => {
-            console.log(pinboard)
-            const response = await fetch(`http://localhost:3000/imagen/api/v1/pinboards/${pinboard}`);
+          user.pinBoards.map(async (pinboard: pinboard) => {
+            const response = await fetch(`http://localhost:3000/imagen/api/v1/pinboards/${pinboard._id}`);
             
             const feedPosts = await response.json();
             //console.log(feedPosts.data.posts)
@@ -83,7 +131,6 @@ function User() {
             
           })
         );
-          console.log(responses)
           const allPosts = responses.flat();
           setFeed(allPosts);
         
@@ -92,14 +139,38 @@ function User() {
       }
     };
     loadFeed();
-  }, [user]); // 🔁 optionally re-run when `user` changes
+  }, [user]); 
 
-console.log(feed)
+  useEffect(()=>{
+    const loadChatId =async()=>{
+      const response = await fetch('http://localhost:3000/imagen/api/v1/users/me')
+      const localData = await response.json()
+      setLocalUser(localData.userId)
+      console.log('+++',localUser)
+      if(user && localUser){
+     const chats = user.chats
+     if(chats.length >=2 ){
+      const foundChat = chats.find((chat)=> 
+      chat.users.map((user)=>(
+        user === localUser
+      ))
+     )
+     console.log(foundChat)
+       setChat(foundChat? foundChat : null)
+     }
+     
+      }
+    }
+    loadChatId()
+  },[user])
  const[onCreated, setOnCreated] = useState<boolean>(true)
  
 
- const handlePortfolioClick = () =>{
-  setOnCreated(!onCreated);
+ const handleCreatedClick = () =>{
+  setOnCreated(true);
+ }
+ const handleSavedClick = () =>{
+  setOnCreated(false);
  }
 
   return (
@@ -120,15 +191,15 @@ console.log(feed)
       <div className="u-description-container"><p className='u-user-description'>{user ?user.description : ''}</p></div>
       <div className="u-button-container">
       <button className='u-button m-2 rounded'>Follow</button>
-      <a href={`/chats/${id}/${user ? user._id : ''}`}>
+      <a href={`/chats/${id}/${chat ? chat._id : ''}`}>
       <button className='u-button m-2 rounded'>text</button>
       </a>
       </div>
       
       <div className='user-portfolio'>
         <div className="u-portfolio-header">
-        <p className='user-created' onClick={handlePortfolioClick}>created</p>
-        <p className='user-saved' onClick={handlePortfolioClick}>saved</p>
+        <p className='user-created' onClick={handleCreatedClick}>created</p>
+        <p className='user-saved' onClick={handleSavedClick}>saved</p>
         </div>
        {onCreated? 
         
@@ -146,99 +217,23 @@ console.log(feed)
         :
         
         <div className="u-collages-container">
-          
+         {collections.map((collection, index)=>(
+            <a href={`/pinwall/${collection._id}`}>
           <div className="collage">
           <div className="collage-left">
-            <img src={massawa} className='collage-img'/>
+            <img src={coverImages[index][0]} className='collage-img'/>
           </div>
           <div className='collage-right'>
           <div className="collage-right-top">
-             <img src={monalisa} className='collage-img'/>
+             <img src={coverImages[index][1]} className='collage-img'/>
           </div>
           <div className="collage-right-bottom">
-             <img src={guitar}className='collage-img' />
+             <img src={coverImages[index][2]}className='collage-img' />
           </div>
           </div>
         </div>
-        
-          <div className="collage">
-            <div className="collage-left">
-              <img src={massawa} className='collage-img'/>
-            </div>
-            <div className='collage-right'>
-            <div className="collage-right-top">
-               <img src={monalisa} className='collage-img'/>
-            </div>
-            <div className="collage-right-bottom">
-               <img src={guitar}className='collage-img' />
-            </div>
-            </div>
-          </div>
-          <div className="collage">
-            <div className="collage-left">
-              <img src={massawa} className='collage-img'/>
-            </div>
-            <div className='collage-right'>
-            <div className="collage-right-top">
-               <img src={monalisa} className='collage-img'/>
-            </div>
-            <div className="collage-right-bottom">
-               <img src={guitar}className='collage-img' />
-            </div>
-            </div>
-          </div>
-          <div className="collage">
-            <div className="collage-left">
-              <img src={massawa} className='collage-img'/>
-            </div>
-            <div className='collage-right'>
-            <div className="collage-right-top">
-               <img src={monalisa} className='collage-img'/>
-            </div>
-            <div className="collage-right-bottom">
-               <img src={guitar}className='collage-img' />
-            </div>
-            </div>
-          </div>
-          <div className="collage">
-            <div className="collage-left">
-              <img src={massawa} className='collage-img'/>
-            </div>
-            <div className='collage-right'>
-            <div className="collage-right-top">
-               <img src={monalisa} className='collage-img'/>
-            </div>
-            <div className="collage-right-bottom">
-               <img src={guitar}className='collage-img' />
-            </div>
-            </div>
-          </div>
-          <div className="collage">
-            <div className="collage-left">
-              <img src={massawa} className='collage-img'/>
-            </div>
-            <div className='collage-right'>
-            <div className="collage-right-top">
-               <img src={monalisa} className='collage-img'/>
-            </div>
-            <div className="collage-right-bottom">
-               <img src={guitar}className='collage-img' />
-            </div>
-            </div>
-          </div>
-          <div className="collage">
-            <div className="collage-left">
-              <img src={massawa} className='collage-img'/>
-            </div>
-            <div className='collage-right'>
-            <div className="collage-right-top">
-               <img src={monalisa} className='collage-img'/>
-            </div>
-            <div className="collage-right-bottom">
-               <img src={guitar}className='collage-img' />
-            </div>
-            </div>
-          </div>
+        </a>
+          ))}
           </div>
       }
       </div>
