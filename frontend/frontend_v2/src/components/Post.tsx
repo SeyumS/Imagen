@@ -27,13 +27,32 @@ type user={
   password: string,
   passwordConfirm:string,
   email: string,
-  pinBoards:[string]
+  pinBoards:[pinboard]
   followercount:number,
   followingcount:number,
   phoneNumber:string,
-  chats:[string]
+  chats:[chat]
 }
 
+type pinboard ={
+  _id: string,
+  name: string,
+createdAt: Date,
+user:string,
+posts:[string]
+}
+
+type chat={
+    _id: string
+    messages:[message]
+    users:[string]
+  }
+
+  type message={
+    content: string,
+    sender: string,
+    timestamp:Date,
+  }
 
 
 function Post() {

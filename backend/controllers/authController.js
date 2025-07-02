@@ -12,10 +12,11 @@ const signToken = (id) => {
 const createSendToken = (user, statusCode, res)=>{
   const token = signToken(user._id);
   const cookieOptions = {
-    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000), httpOnly:true,
+    expires: new Date(Date.now() + Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000), httpOnly:true,
   };
   if(process.env.NODE_ENV === 'production')cookieOptions.secure = true;
   res.cookie('jwt', token, cookieOptions);
+  //console.log('req.cookies: ',req.cookies,'\n cookie signed')
   user.password = undefined;
 
   res.status(statusCode).json({
@@ -70,20 +71,20 @@ export const protect = async (req, res, next)=>{
   }else if (req.cookies.jwt){
     token = req.cookies.jwt;
   }
-  console.log(token);
   if(!token){
     return next(new AppError('You are not logged in!', 401))
   }
-  const decoded = await promisify(jwt.verify(token, process.env.JWT_SECRET));
+  const decoded = await jwt.verify(token, process.env.JWT_SECRET);
 
   const currentUser = await User.findById(decoded.id)
   if(!currentUser){
     return next(new AppError('The user belonging to this token does no longer exist', 401))
   }
-  if(currentUser.changesPasswordAfter(decoded.iat)){
+  if(currentUser.changedPasswordAfter(decoded.iat)){
     return next(new AppError('user recently changed password! please log in again', 401))
   }
   req.user = currentUser
+  next()
 };
 
 export const isLoggedIn = async (req, res, next)=>{

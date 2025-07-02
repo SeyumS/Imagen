@@ -7,6 +7,11 @@ const router = express.Router();
 
 router.route('/').get(getAllUsers).post(createUser).patch(updatePinBoardId);
 
+router.route('/me').get(protect, getMe)
+ .patch(protect, updateMe)
+ .put(protect, uploadUserPhoto)
+ .delete(protect, deleteMe)
+
 router.route('/:id').get(getUser);
 
 router.post('/signup',signup)
@@ -19,9 +24,6 @@ router.use(protect)
 
 router.patch('/updateMyPassword', updatePassword)
 
-router.route('/me').get(getMe)
-                   .patch(updateMe)
-                   .put(uploadUserPhoto)
-                   .delete(deleteMe)
+
 
 export default router

@@ -58,7 +58,7 @@ const userSchema = mongoose.Schema({
   },
   chats:[{
     type: mongoose.Schema.ObjectId,
-    ref: 'chat'
+    ref: 'Chat'
   }]
 })
 

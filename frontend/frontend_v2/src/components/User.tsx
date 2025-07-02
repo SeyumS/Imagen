@@ -45,9 +45,10 @@ posts:[string]
 }
 
 type chat={
-    _id: string
+    
     messages:[message]
     users:[string]
+    _id: string
   }
 
   type message={
@@ -66,6 +67,7 @@ function User() {
   const [user,setUser] = useState<user|null>(null);
   const [localUser, setLocalUser]= useState<string|null>(null)
   const[chat, setChat]= useState<chat|null>(null)
+  const[foundChat, setFoundChat] =useState<chat|null>(null)
   const [feed, setFeed] = useState<post[]>([])
   const [collections, setCollections]= useState<pinboard[]>([]);
   const [coverImages, setCoverImages]=useState<string[][]>([])
@@ -104,7 +106,6 @@ function User() {
         })
       );
         const covers = responses;
-        console.log(responses)
        setCoverImages(covers);
       
     } catch (err) {
@@ -125,7 +126,6 @@ function User() {
             const response = await fetch(`http://localhost:3000/imagen/api/v1/pinboards/${pinboard._id}`);
             
             const feedPosts = await response.json();
-            //console.log(feedPosts.data.posts)
             return feedPosts.data.posts
           
             
@@ -143,26 +143,33 @@ function User() {
 
   useEffect(()=>{
     const loadChatId =async()=>{
-      const response = await fetch('http://localhost:3000/imagen/api/v1/users/me')
+      const response = await fetch('http://localhost:3000/imagen/api/v1/users/me',{
+        credentials: 'include'
+      })
       const localData = await response.json()
-      setLocalUser(localData.userId)
-      console.log('+++',localUser)
+      setLocalUser(localData.data.userId)
       if(user && localUser){
      const chats = user.chats
-     if(chats.length >=2 ){
-      const foundChat = chats.find((chat)=> 
-      chat.users.map((user)=>(
-        user === localUser
-      ))
+      const chatFound = chats.find((chat)=> 
+      chat.users.includes(localUser)
      )
-     console.log(foundChat)
-       setChat(foundChat? foundChat : null)
+     setFoundChat(chatFound? chatFound : null)
+
+     if(!foundChat){
+      const response = await fetch(`http://localhost:3000/imagen/api/v1/chats/${user._id}/${localUser}`, {method: 'POST', credentials: 'include', headers:{'Content-Type': 'application/json'},
+        body: JSON.stringify({messages:[],users:[localUser, user._id]})})
+        const chatData = await response.json()
+        console.log('chatData: ',chatData.data.chat)
+        setFoundChat(chatData.data.chat)
      }
+
+     console.log('foundChat: ',foundChat)
+       setChat(foundChat? foundChat : null);
      
       }
     }
     loadChatId()
-  },[user])
+  },[user, localUser, foundChat])
  const[onCreated, setOnCreated] = useState<boolean>(true)
  
 
@@ -191,7 +198,7 @@ function User() {
       <div className="u-description-container"><p className='u-user-description'>{user ?user.description : ''}</p></div>
       <div className="u-button-container">
       <button className='u-button m-2 rounded'>Follow</button>
-      <a href={`/chats/${id}/${chat ? chat._id : ''}`}>
+      <a href={`/chats/${localUser}/${chat ? chat._id : ''}`}>
       <button className='u-button m-2 rounded'>text</button>
       </a>
       </div>

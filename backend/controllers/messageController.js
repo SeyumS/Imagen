@@ -48,7 +48,12 @@ export const saveMessage= async (req,res,next)=>{
 
 export const createChat = async(req,res,next)=>{
   const chat = await Chat.create(req.body);
+  const users = await Promise.all(chat.users.map((user)=>(User.findByIdAndUpdate(user, {$push:{chats: chat._id}}))))
+  //console.log('chat: ', chat,'\n users: ', users)
   res.status(200).json({
-    chat
+    data:{
+      chat,
+      users
+    }
   });
 }

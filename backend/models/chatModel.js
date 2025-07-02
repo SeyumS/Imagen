@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 const chatSchema = mongoose.Schema({
-  chat:{
+  //chat:{
     messages:[{
       contend:{
         type: String,
@@ -17,7 +17,7 @@ const chatSchema = mongoose.Schema({
       type: mongoose.Schema.ObjectId,
       ref: 'User'
     }]
-  }
+  //}
   
 })
 

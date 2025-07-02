@@ -6,7 +6,7 @@ import AppError from '../utils/AppError.js';
 
 export const getPost = async(req,res,next)=>{
   const post = await Pin.findById(req.params.id);
-  console.log(post);
+  //console.log('````',post);
   res.status(200).json({
     status: 'success',
     data:{
